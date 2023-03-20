@@ -1,4 +1,5 @@
-const { Card } = require("./card");
+const { Card } = require('./card');
+const { Season } = require('./season');
 
 class Badge {
     constructor(name, level, maxLevel, progress, target, pic) {
@@ -48,32 +49,25 @@ class Achievement {
 }
 
 class LeagueStat {
-    constructor(trophies, trophyRecord, month) {
+    constructor(trophies, trophyRecord, season) {
         this.trophies = trophies;
         this.trophyRecord = trophyRecord;
-        this.month = month;
-    }
-
-    getTimestamp() {
-        const date = new Date();
-        return `${date.getFullYear()}-${date.getMonth()}`;
+        this.season = season;
     }
 
     static fromJSON(jsonObject) {
-        const date = new Date();
-        const month = date.getMonth() + 1;
-        const timestamp = jsonObject.id || `${date.getFullYear()}-${month.length === 2 ? month : `0${month}`}`;
+        const season = jsonObject.id ? new Season(jsonObject.id) : Season.current();
         const trophyRecord = jsonObject.bestTrophies ?
             Math.max(jsonObject.bestTrophies, jsonObject.trophies) :
             jsonObject.trophies;
         return new LeagueStat(
             jsonObject.trophies,
             trophyRecord,
-            timestamp);
+            season);
     }
 
     toString() {
-        return `(${this.month}) ${this.trophies} Trophies, ${this.trophyRecord} Trophy Record`;
+        return `(${this.season}) ${this.trophies} Trophies, ${this.trophyRecord} Trophy Record`;
     }
 }
 

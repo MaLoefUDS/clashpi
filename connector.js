@@ -1,4 +1,4 @@
-const https = require("https");
+const https = require('https');
 
 class Connector {
     constructor(apiToken) {
@@ -6,10 +6,11 @@ class Connector {
         this.apiToken = apiToken;
     }
 
-    async request(args = [], queries = []) {
+    async request(args = [], queries = {}) {
         const options = {
             hostname: this.api,
-            path: '/v1/' + args.join('/') + (queries.length === 0 ? '' : '?' + queries.join('&')),
+            path: '/v1/' + args.join('/') + (queries.length === 0 ? '' : '?' +
+                Object.keys(queries).map(key => `${key}=${queries[key]}`).join('&')),
             method: 'GET',
             headers: {
                 Accept: 'application/json',

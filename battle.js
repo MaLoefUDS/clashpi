@@ -1,5 +1,5 @@
-const { Card } = require("./card");
-const {ChallengeView} = require("./challenge");
+const { Card } = require('./card');
+const { ChallengeView } = require('./challenge');
 
 const BattleType = {
     RIVERRACE: 'riverRacePvP',
