@@ -1,4 +1,4 @@
-const { ChallengeView } = require('./challenge');
+const { ChallengeView, Price } = require('./challenge');
 
 const TournamentType = {
     OPEN: 'open',
@@ -86,4 +86,67 @@ class Tournament {
     }
 }
 
-module.exports = {Tournament, TournamentStatus, TournamentType}
+class TournamentPrice {
+    constructor(winsNeeded, price) {
+        this.winsNeeded = winsNeeded;
+        this.price = price;
+    }
+
+    static fromJSON(jsonObject) {
+        return new TournamentPrice(
+            jsonObject.wins,
+            Price.fromJSON(jsonObject)
+        )
+    }
+
+    toString() {
+        return this.price.toString();
+    }
+}
+
+class GlobalTournament {
+    constructor(tag, name, startTime, endTime, rewards, freeTierRewards, topRankReward, maxTopRewardRank, gameMode,
+                maxLosses, levelCap, tournamentLevel) {
+        this.tag = tag;
+        this.name = name;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.rewards = rewards;
+        this.freeTierRewards = rewards;
+        this.topRankReward = topRankReward;
+        this.maxTopRewardRank = maxTopRewardRank;
+        this.gameMode = gameMode;
+        this.maxLosses = maxLosses;
+        this.levelCap = levelCap;
+        this.tournamentLevel = tournamentLevel;
+    }
+
+    static fromJSON(jsonObject) {
+        return new GlobalTournament(
+            jsonObject.tag,
+            jsonObject.title,
+            ChallengeView.formatDate(jsonObject.startTime),
+            ChallengeView.formatDate(jsonObject.endTime),
+            jsonObject.milestoneRewards
+                .filter(reward => reward.type !== null)
+                .map(reward => TournamentPrice.fromJSON(reward)),
+            jsonObject.freeTierRewards
+                .filter(reward => reward.type !== null)
+                .map(reward => TournamentPrice.fromJSON(reward)),
+            jsonObject.topRankReward
+                .filter(reward => reward.type !== null)
+                .map(reward => TournamentPrice.fromJSON(reward)),
+            jsonObject.maxTopRewardRank,
+            jsonObject.gameMode,
+            jsonObject.maxLosses,
+            jsonObject.minExpLevel,
+            jsonObject.tournamentLevel);
+    }
+
+    toString() {
+        return this.name;
+    }
+
+}
+
+module.exports = {Tournament, TournamentStatus, TournamentType, GlobalTournament}

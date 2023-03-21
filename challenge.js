@@ -129,4 +129,4 @@ class ChallengeView {
     }
 }
 
-module.exports = {Challenge, ChallengeView}
+module.exports = {Challenge, ChallengeView, Price}

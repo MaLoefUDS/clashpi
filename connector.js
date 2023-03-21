@@ -9,7 +9,7 @@ class Connector {
     async request(args = [], queries = {}) {
         const options = {
             hostname: this.api,
-            path: '/v1/' + args.join('/') + (queries.length === 0 ? '' : '?' +
+            path: '/v1/' + Connector.pack(args).join('/') + (queries.length === 0 ? '' : '?' +
                 Object.keys(queries).map(key => `${key}=${queries[key]}`).join('&')),
             method: 'GET',
             headers: {
@@ -30,6 +30,10 @@ class Connector {
                 reject(error);
             })
         });
+    }
+
+    static pack(value) {
+        return value.constructor.name === 'Array' ? value : [value];
     }
 }
 

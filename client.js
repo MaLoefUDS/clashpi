@@ -5,7 +5,7 @@ const { Player } = require('./player');
 const { BattleLog } = require('./battle');
 const { Location, ClanRanking } = require('./location');
 const { PlayerRanking } = require('./season');
-const { Tournament } = require('./tournament');
+const { Tournament, GlobalTournament} = require('./tournament');
 
 class Client {
     constructor(apiToken) {
@@ -14,9 +14,9 @@ class Client {
 
     async getCards(rarity = [Rarity.COMMON, Rarity.RARE, Rarity.EPIC, Rarity.LEGENDARY, Rarity.CHAMPION],
                    name = []) {
-        rarity = Client.pack(rarity);
-        name = Client.pack(name);
-        const cards = (await this.connector.request(['cards'])).items;
+        rarity = Connector.pack(rarity);
+        name = Connector.pack(name);
+        const cards = (await this.connector.request('cards')).items;
         return cards
             .map(card => Card.fromJSON(card))
             .filter(card => rarity.includes(card.rarity))
@@ -24,7 +24,7 @@ class Client {
     }
 
     async getChallenges() {
-        const challenges = (await this.connector.request(['challenges']));
+        const challenges = (await this.connector.request('challenges'));
         return challenges
             .map(challenge => ChallengeView.fromJSON(challenge));
     }
@@ -34,7 +34,11 @@ class Client {
         return Player.fromJSON(player);
     }
 
-    async getUpcomingChests(tag, index = undefined) {
+    async getUpcomingChests(player, index = undefined) {
+        let tag = player;
+        if (player.constructor.name === 'Object') {
+            tag = player.tag; // Assumption: player is an object of Player type
+        }
         const chests = (await this.connector.request(['players', tag, 'upcomingchests'])).items;
         if (index) {
             return chests
@@ -56,7 +60,7 @@ class Client {
 
     async getLocations(limit = undefined) {
         const limitQuery = limit === undefined ? {} : {limit: limit};
-        const locations = (await this.connector.request(['locations'], limitQuery)).items;
+        const locations = (await this.connector.request('locations', limitQuery)).items;
         return locations
             .map(location => Location.fromJSON(location));
     }
@@ -93,7 +97,7 @@ class Client {
 
     async getTournaments(name, limit = undefined) {
         const query = limit === undefined ? {name: name} : {name: name, limit: limit};
-        const tournaments = (await this.connector.request(['tournaments'], query)).items;
+        const tournaments = (await this.connector.request('tournaments', query)).items;
         return tournaments
             .map(tournament => Tournament.fromJSON(tournament));
     }
@@ -103,7 +107,11 @@ class Client {
         return Tournament.fromJSON(tournament);
     }
 
-    static pack(value) {
-        return value.constructor.name === 'Array' ? value : [value];
+    async getGlobalTournament() {
+        const tournaments = (await this.connector.request('globaltournaments')).items;
+        return tournaments
+            .map(tournament => GlobalTournament.fromJSON(tournament));
     }
 }
+
+module.exports = {Client}
