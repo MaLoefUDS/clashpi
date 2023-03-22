@@ -17,19 +17,27 @@ class Connector {
                 Authorization: 'Bearer ' + this.apiToken
             }
         };
-        return await new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             https.get(options, async response => {
                 let content = [];
                 response.on('data', data => {
                     content.push(data.toString());
                 });
                 response.on('end', _ => {
-                    resolve(JSON.parse(content.join("")));
+                    const result = JSON.parse(content.join(''));
+                    resolve(Connector.catchAPIError(result));
                 });
             }).on('error', error => {
                 reject(error);
             })
         });
+    }
+
+    static catchAPIError(jsonObject) {
+        if (jsonObject.reason) {
+            throw new Error(`API error: ${jsonObject.message}`);
+        }
+        return jsonObject;
     }
 
     static pack(value) {

@@ -6,6 +6,7 @@ const { BattleLog } = require('./battle');
 const { Location, ClanRanking } = require('./location');
 const { PlayerRanking } = require('./season');
 const { Tournament, GlobalTournament} = require('./tournament');
+const path = require("path");
 
 class Client {
     constructor(apiToken) {
@@ -30,15 +31,15 @@ class Client {
     }
 
     async getPlayer(tag) {
-        const player = (await this.connector.request(['players', tag]));
+        // Allow getPlayer to be called on a tagged object
+        tag = this.argumentToString(`getPlayer(${tag})`, tag, 'tag');
+        const player = await this.connector.request(['players', tag]);
         return Player.fromJSON(player);
     }
 
-    async getUpcomingChests(player, index = undefined) {
-        let tag = player;
-        if (player.constructor.name === 'Object') {
-            tag = player.tag; // Assumption: player is an object of Player type
-        }
+    async getUpcomingChests(tag, index = undefined) {
+        // Allow getUpcomingChests to be called on a tagged object
+        tag = this.argumentToString(`getUpcomingChests(${tag}, ${index})`, tag, 'tag');
         const chests = (await this.connector.request(['players', tag, 'upcomingchests'])).items;
         if (index) {
             return chests
@@ -49,11 +50,9 @@ class Client {
         }
     }
 
-    async getBattleLog(player) {
-        let tag = player;
-        if (player.constructor.name === 'Object') {
-            tag = player.tag; // Assumption: player is an object of Player type
-        }
+    async getBattleLog(tag) {
+        // Allow getBattleLog to be called on a tagged object
+        tag = this.argumentToString(`getBattleLog(${tag})`, tag, 'tag');
         const battleLog = await this.connector.request(['players', tag, 'battlelog']);
         return BattleLog.fromJSON(battleLog);
     }
@@ -65,37 +64,33 @@ class Client {
             .map(location => Location.fromJSON(location));
     }
 
-    async getClanRanks(location, clanWars = false, limit = undefined) {
-        let id = location;
+    async getClanRanks(locationId, clanWars = false, limit = undefined) {
+        // Allow getClanRanks to be called on an identified object
+        locationId = this.argumentToString(`getClanRanks(${location}, ${clanWars}, ${limit})`, locationId, 'id');
         const limitQuery = limit === undefined ? {} : {limit: limit};
-        if (location.constructor.name === 'Object') {
-            id = location.id; // Assumption: location is an object of Location type
-        }
         const clanRanks = (await this.connector.request(
-            ['locations', id, 'rankings', clanWars ? 'clanwars' : 'clans'],
-            limitQuery)).items;
+            ['locations', locationId, 'rankings', clanWars ? 'clanwars' : 'clans'], limitQuery)).items;
         return clanRanks
             .map(clanRank => ClanRanking.fromJSON(clanRank));
     }
 
-    async getPlayerRanks(season, pathOfLegends = false, limit = undefined) {
+    async getPlayerRanks(seasonId, pathOfLegends = false, limit = undefined) {
         if (pathOfLegends) {
-            throw new Error('PathOfLegends option is currently not being supported by the API.');
+            throw new Error('[!] PathOfLegends option is currently not being supported by the API.');
         }
-
-        let id = season;
+        // Allow getPlayerRanks to be called on an identified object
+        seasonId = this.argumentToString(`getClanRanks(${seasonId}, ${pathOfLegends}, ${limit})`, seasonId, 'id');
         const limitQuery = limit === undefined ? {} : {limit: limit};
-        if (season.constructor.name === 'Object') {
-            id = season.id; // Assumption: season is an object of Season type
-        }
         const playerRanks = (await this.connector.request(
-            ['locations', 'global', pathOfLegends ? 'pathoflegend' : 'seasons', id, 'rankings', 'players'],
+            ['locations', 'global', pathOfLegends ? 'pathoflegend' : 'seasons', seasonId, 'rankings', 'players'],
             limitQuery)).items;
         return playerRanks
             .map(playerRank => PlayerRanking.fromJSON(playerRank));
     }
 
     async getTournaments(name, limit = undefined) {
+        // Allow getTournaments to be called on a named object
+        name = this.argumentToString(`getTournaments(${name}, ${limit})`, name, 'name');
         const query = limit === undefined ? {name: name} : {name: name, limit: limit};
         const tournaments = (await this.connector.request('tournaments', query)).items;
         return tournaments
@@ -103,6 +98,8 @@ class Client {
     }
 
     async getTournament(tag) {
+        // Allow getTournaments to be called on a tagged object
+        tag = this.argumentToString(`getTournament(${tag})`, tag, 'tag');
         const tournament = await this.connector.request(['tournaments', tag]);
         return Tournament.fromJSON(tournament);
     }
@@ -112,6 +109,25 @@ class Client {
         return tournaments
             .map(tournament => GlobalTournament.fromJSON(tournament));
     }
+
+    argumentToString(caller, object, key) {
+        if (object === null || object === undefined) {
+            throw new Error(`[!] ${caller}: Empty argument provided`);
+        }
+        switch (object.constructor.name) {
+            case 'String': return object;
+            case 'Object': {
+                if (object[key]) {
+                    return object[key];
+                } else {
+                    throw new Error(`[!] ${caller}: API failure, maybe you provided an invalid argument.`);
+                }
+            }
+        }
+    }
 }
+
+const client = new Client("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjMyZGFhNWU4LTgyYTItNDYwNS1iYjhkLTE5OTJhNTkzMWIyZiIsImlhdCI6MTY3OTQ4NzkwNiwic3ViIjoiZGV2ZWxvcGVyLzE1NTMzNGJiLWYxNTQtMzFmYS1jODViLWZmYzZhMmYzMjgxMSIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMzQuOTYuMjQ2LjIiXSwidHlwZSI6ImNsaWVudCJ9XX0._egHdjze34ltHEtsjBGhEyhsHRqbGXUKMJ7rRRx7vwCvNf-3_fY8SdQ8mH48EDO4xFN492UvA4Kyfo-ODOEDOQ");
+client.getPlayer().then(t => console.log(t.toString()));
 
 module.exports = {Client}

@@ -15,7 +15,7 @@ Example:
 First import the library and create a `Client` object.
 ```js
 const { Client } = require('clashpi');
-const client = Client(APIKEY);
+const client = new Client(APIKEY);
 ```
 
 Then call functions on the `Client` object.
@@ -47,11 +47,11 @@ client.getPlayerRanks('2023-03')
 
 > Get all information about a specific player
 
-* **getUpcomingChests**(player, index = undefined)
+* **getUpcomingChests**(tag, index = undefined)
 
 > Get all (or a specific) upcoming chests of a specific player
 
-* **getBattleLog**(player)
+* **getBattleLog**(tag)
 
 > Get the battle log of a specific player
 
@@ -59,11 +59,11 @@ client.getPlayerRanks('2023-03')
 
 > Get a list of all locations in the game
 
-* **getClanRanks**(location, clanWars = false, limit = undefined)
+* **getClanRanks**(locationId, clanWars = false, limit = undefined)
 
 > Get a ranking of all clans in a certain location, either by clan ranking or by clan-war ranking 
 
-* **getPlayerRanks**(season, pathOfLegends = false, limit = undefined)
+* **getPlayerRanks**(seasonId, pathOfLegends = false, limit = undefined)
 
 > Get ranking of all players that played in a specific season, either by trophies or by path of legend rank
 

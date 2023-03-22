@@ -56,6 +56,10 @@ class LeagueStat {
     }
 
     static fromJSON(jsonObject) {
+        if (jsonObject === null || jsonObject === undefined) {
+            // Some players might have not played ranked in a lot of seasons
+            return new LeagueStat(undefined, undefined, undefined);
+        }
         const season = jsonObject.id ? new Season(jsonObject.id) : Season.current();
         const trophyRecord = jsonObject.bestTrophies ?
             Math.max(jsonObject.bestTrophies, jsonObject.trophies) :
@@ -79,6 +83,10 @@ class LeagueStats {
     }
 
     static fromJSON(jsonObject) {
+        if (jsonObject === null || jsonObject === undefined) {
+            // Some players might have never played ranked
+            return new LeagueStats(undefined, undefined, undefined);
+        }
         const current = LeagueStat.fromJSON(jsonObject.currentSeason);
         const previous = LeagueStat.fromJSON(jsonObject.previousSeason);
         let best = LeagueStat.fromJSON(jsonObject.bestSeason);
@@ -162,7 +170,7 @@ class Player {
             jsonObject.totalDonations,
             jsonObject.warDayWins,
             jsonObject.clanCardsCollected,
-            jsonObject.clan.name,
+            jsonObject.clan ? jsonObject.clan.name : 'no in a clan',
             jsonObject.arena.name,
             LeagueStats.fromJSON(jsonObject.leagueStatistics),
             jsonObject.badges.map(badge => Badge.fromJSON(badge)),
