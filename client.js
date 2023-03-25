@@ -6,7 +6,6 @@ const { BattleLog } = require('./battle');
 const { Location, ClanRanking } = require('./location');
 const { PlayerRanking } = require('./season');
 const { Tournament, GlobalTournament} = require('./tournament');
-const path = require("path");
 
 class Client {
     constructor(apiToken) {
@@ -126,8 +125,5 @@ class Client {
         }
     }
 }
-
-const client = new Client("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjMyZGFhNWU4LTgyYTItNDYwNS1iYjhkLTE5OTJhNTkzMWIyZiIsImlhdCI6MTY3OTQ4NzkwNiwic3ViIjoiZGV2ZWxvcGVyLzE1NTMzNGJiLWYxNTQtMzFmYS1jODViLWZmYzZhMmYzMjgxMSIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMzQuOTYuMjQ2LjIiXSwidHlwZSI6ImNsaWVudCJ9XX0._egHdjze34ltHEtsjBGhEyhsHRqbGXUKMJ7rRRx7vwCvNf-3_fY8SdQ8mH48EDO4xFN492UvA4Kyfo-ODOEDOQ");
-client.getPlayer().then(t => console.log(t.toString()));
 
 module.exports = {Client}
