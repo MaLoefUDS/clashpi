@@ -5,7 +5,7 @@ const { Player } = require('./player');
 const { BattleLog } = require('./battle');
 const { Location, ClanRanking } = require('./location');
 const { PlayerRanking } = require('./season');
-const { Tournament, GlobalTournament} = require('./tournament');
+const { Tournament, GlobalTournament } = require('./tournament');
 
 class Client {
     constructor(apiToken) {
