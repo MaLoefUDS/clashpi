@@ -170,12 +170,12 @@ class Player {
             jsonObject.totalDonations,
             jsonObject.warDayWins,
             jsonObject.clanCardsCollected,
-            jsonObject.clan ? jsonObject.clan.name : 'no in a clan',
+            jsonObject.clan ? jsonObject.clan.name : 'not in a clan',
             jsonObject.arena.name,
             LeagueStats.fromJSON(jsonObject.leagueStatistics),
-            jsonObject.badges.map(badge => Badge.fromJSON(badge)),
-            jsonObject.achievements.map(achievement => Achievement.fromJSON(achievement)),
-            jsonObject.cards.map(card => Card.fromJSON(card)),
+            jsonObject.badges.map(Badge.fromJSON),
+            jsonObject.achievements.map(Achievement.fromJSON),
+            jsonObject.cards.map(Card.fromJSON),
             Card.fromJSON(jsonObject.currentFavouriteCard));
     }
 

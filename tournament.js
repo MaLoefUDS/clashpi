@@ -76,7 +76,7 @@ class Tournament {
                 ? ChallengeView.formatDate(jsonObject.startedTime)
                 : undefined,
             jsonObject.membersList
-                ? jsonObject.membersList.map(player => TournamentPlayer.fromJSON(player))
+                ? jsonObject.membersList.map(TournamentPlayer.fromJSON)
                 : [],
             jsonObject.gameMode);
     }
@@ -129,13 +129,13 @@ class GlobalTournament {
             ChallengeView.formatDate(jsonObject.endTime),
             jsonObject.milestoneRewards
                 .filter(reward => reward.type !== null)
-                .map(reward => TournamentPrice.fromJSON(reward)),
+                .map(TournamentPrice.fromJSON),
             jsonObject.freeTierRewards
                 .filter(reward => reward.type !== null)
-                .map(reward => TournamentPrice.fromJSON(reward)),
+                .map(TournamentPrice.fromJSON),
             jsonObject.topRankReward
                 .filter(reward => reward.type !== null)
-                .map(reward => TournamentPrice.fromJSON(reward)),
+                .map(TournamentPrice.fromJSON),
             jsonObject.maxTopRewardRank,
             jsonObject.gameMode,
             jsonObject.maxLosses,

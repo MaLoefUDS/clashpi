@@ -66,7 +66,7 @@ class Challenge {
         let prices = jsonObject.prizes;
         prices = prices
             .filter(price => price.type && price.type !== "none")
-            .map(price => Price.fromJSON(price));
+            .map(Price.fromJSON);
         return new Challenge(
             jsonObject.id,
             jsonObject.name,
@@ -94,7 +94,7 @@ class ChallengeView {
 
     static fromJSON(jsonObject) {
         let challenges = jsonObject.challenges
-            .map(challenge => Challenge.fromJSON(challenge));
+            .map(Challenge.fromJSON);
         return new ChallengeView(
             ChallengeView.formatDate(jsonObject.startTime),
             ChallengeView.formatDate(jsonObject.endTime),

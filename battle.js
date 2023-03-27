@@ -31,7 +31,7 @@ class BattlePlayer {
             jsonObject.princesTowerHitPoints,
             jsonObject.cards
                 .filter(card => card.name)
-                .map(card => Card.fromJSON(card)),
+                .map(Card.fromJSON),
             jsonObject.elixirLeaked);
     }
 }
@@ -67,8 +67,8 @@ class Battle {
             jsonObject.gameMode,
             jsonObject.deckSelection,
             jsonObject.isHostedMatch,
-            jsonObject.team.map(player => BattlePlayer.fromJSON(player)),
-            jsonObject.opponent.map(player => BattlePlayer.fromJSON(player)));
+            jsonObject.team.map(BattlePlayer.fromJSON),
+            jsonObject.opponent.map(BattlePlayer.fromJSON));
     }
 
     toString() {
