@@ -18,7 +18,7 @@ class Client {
         name = Connector.pack(name);
         const cards = (await this.connector.request('cards')).items;
         return cards
-            .map(card => Card.fromJSON(card))
+            .map(Card.fromJSON)
             .filter(card => rarity.includes(card.rarity))
             .filter(card => name.length === 0 ? true : name.includes(card.name));
     }
@@ -26,7 +26,7 @@ class Client {
     async getChallenges() {
         const challenges = (await this.connector.request('challenges'));
         return challenges
-            .map(challenge => ChallengeView.fromJSON(challenge));
+            .map(ChallengeView.fromJSON);
     }
 
     async getPlayer(tag) {
@@ -60,7 +60,7 @@ class Client {
         const limitQuery = limit === undefined ? {} : {limit: limit};
         const locations = (await this.connector.request('locations', limitQuery)).items;
         return locations
-            .map(location => Location.fromJSON(location));
+            .map(Location.fromJSON);
     }
 
     async getClanRanks(locationId, clanWars = false, limit = undefined) {
@@ -70,7 +70,7 @@ class Client {
         const clanRanks = (await this.connector.request(
             ['locations', locationId, 'rankings', clanWars ? 'clanwars' : 'clans'], limitQuery)).items;
         return clanRanks
-            .map(clanRank => ClanRanking.fromJSON(clanRank));
+            .map(ClanRanking.fromJSON);
     }
 
     async getPlayerRanks(seasonId, pathOfLegends = false, limit = undefined) {
@@ -84,7 +84,7 @@ class Client {
             ['locations', 'global', pathOfLegends ? 'pathoflegend' : 'seasons', seasonId, 'rankings', 'players'],
             limitQuery)).items;
         return playerRanks
-            .map(playerRank => PlayerRanking.fromJSON(playerRank));
+            .map(PlayerRanking.fromJSON);
     }
 
     async getTournaments(name, limit = undefined) {
@@ -93,7 +93,7 @@ class Client {
         const query = limit === undefined ? {name: name} : {name: name, limit: limit};
         const tournaments = (await this.connector.request('tournaments', query)).items;
         return tournaments
-            .map(tournament => Tournament.fromJSON(tournament));
+            .map(Tournament.fromJSON);
     }
 
     async getTournament(tag) {
@@ -106,7 +106,7 @@ class Client {
     async getGlobalTournament() {
         const tournaments = (await this.connector.request('globaltournaments')).items;
         return tournaments
-            .map(tournament => GlobalTournament.fromJSON(tournament));
+            .map(GlobalTournament.fromJSON);
     }
 
     argumentToString(caller, object, key) {

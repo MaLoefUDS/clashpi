@@ -21,16 +21,16 @@ const client = new Client(APIKEY);
 Then call functions on the `Client` object.
 ````js
 client.getPlayer('#JGJYQ2P2V')
-    .then(player => client.getUpcomingChests(player)
-        .then(chests => console.log(chests)));
+    .then(player => client
+        .getUpcomingChests(player).then(console.log));
 
 // OR
 
 client.getUpcomingChests('#JGJYQ2P2V')
-        .then(chests => console.log(chest));
+    .then(console.log);
 
 client.getPlayerRanks('2023-03')
-    .then(rankings => console.log(rankings));
+    .then(console.log);
 ````
 
 # Documentation
