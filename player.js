@@ -1,5 +1,6 @@
 const { Card } = require('./card');
 const { Season } = require('./season');
+const { Utils } = require('./utils');
 
 class Badge {
     constructor(name, level, maxLevel, progress, target, pic) {
@@ -182,6 +183,21 @@ class Player {
     toString() {
         return this.name;
     }
+
+
+    async getCardValue() {
+        const cards = this.cards;
+
+        let costPerCard = new Map();
+        cards.forEach(card => {
+            const rarity = card.rarity;
+            const currentLevel = card.level;
+            costPerCard.set(card.name, Utils.totalCardValue(currentLevel, rarity))
+        });
+        return costPerCard;
+    }
+
 }
 
-module.exports = { Player };
+
+module.exports = {Player};

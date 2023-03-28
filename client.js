@@ -1,11 +1,13 @@
-const { Connector } = require('./connector');
-const { Card, Rarity } = require('./card');
+const { Connector} = require('./connector');
+const { Card } = require('./card');
 const { ChallengeView } = require('./challenge');
 const { Player } = require('./player');
 const { BattleLog } = require('./battle');
 const { Location, ClanRanking } = require('./location');
 const { PlayerRanking } = require('./season');
 const { Tournament, GlobalTournament } = require('./tournament');
+const { Rarity } = require('./utils');
+
 
 class Client {
     constructor(apiToken) {
