@@ -1,3 +1,5 @@
+![](logo.png)
+
 # Description
 
 This package contains a simple, asynchronous, free, dependency-free node.js library for using the [Clash Royale API](https://developer.clashroyale.com/#/).
