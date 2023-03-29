@@ -185,7 +185,7 @@ class Player {
     }
 
 
-    async getCardValue() {
+    getCardValue() {
         const cards = this.cards;
 
         let costPerCard = new Map();
@@ -196,7 +196,6 @@ class Player {
         });
         return costPerCard;
     }
-
 }
 
 

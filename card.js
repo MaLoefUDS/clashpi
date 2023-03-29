@@ -1,4 +1,4 @@
-
+const {Utils} = require('./utils')
 
 const StartLevel = {
     COMMON: 1,
@@ -28,11 +28,6 @@ class Card {
         return new Card(jsonObject.name, jsonObject.id, jsonObject.maxLevel, jsonObject.level, jsonObject.count, jsonObject.iconUrls.medium);
     }
 
-    static getCorrectLevel(level, rarity) {
-        // start level of a card = 15 - rarity
-        // correct level = start level + received Level - 1
-        return 15 - rarity + level - 1;
-    }
 
 }
 

@@ -53,6 +53,14 @@ class Utils {
         return 15 - rarity + level - 1;
     }
 
+    static cardValueToString(cards) {
+        let sortedMap = new Map([...cards.entries()].sort((a, b) => b[1] - a[1]));
+
+        let result = "Gold spent per card (in descending order): \n";
+        sortedMap.forEach((value, name) => result += name +  ": " + value + "\n");
+        return result;
+    }
+
 }
 
-module.exports = {Utils}
+module.exports = {Utils, Rarity, UpgradeCost}
